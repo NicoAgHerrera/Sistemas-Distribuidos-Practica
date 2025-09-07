@@ -1,0 +1,23 @@
+{
+  "name": "sistemas-distribuidos-practica",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NicoAgHerrera/Sistemas-Distribuidos-Practica.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NicoAgHerrera/Sistemas-Distribuidos-Practica/issues"
+  },
+  "homepage": "https://github.com/NicoAgHerrera/Sistemas-Distribuidos-Practica#readme",
+  "dependencies": {
+    "axios": "^1.11.0"
+  }
+}
