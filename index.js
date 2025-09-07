@@ -2,21 +2,19 @@ const axios= require ('axios');
 
 async function get_usuarios(cantidad){
     try {
-        let respuesta= await axios.get('https://jsonplaceholder.typicode.com/users')
+        const respuesta= await axios.get('https://jsonplaceholder.typicode.com/users')
         return respuesta.data.slice(0,cantidad); //convierte la respuesta en un array y toma solo la cantidad de usuarios solicitada
     } catch (error) {
-        console.error('Error al recibir informacion de usuarios:', error);
-        return null;
+        throw new Error(`Error al recibir informacion de usuarios:${error.message}`);
         }
 }
 
 async function get_cantidad_publicaciones(id_usuario){
     try {
-        let response= await axios.get(`https://jsonplaceholder.typicode.com/posts?userId=${id_usuario}`); //solicita las publicaciones del usuario
+        const response= await axios.get(`https://jsonplaceholder.typicode.com/posts?userId=${id_usuario}`); //solicita las publicaciones del usuario
         return response.data.length; //devuelve la cantidad de publicaciones del usuario
     } catch (error) {
-        console.error(`Error al recibir informacion publicaciones del usuario ${id_usuario}:`, error);
-        return null;
+        throw new Error(`Error al recibir informacion publicaciones del usuario ${id_usuario}:${error.message}`);
         };
 }
 
@@ -29,8 +27,7 @@ async function ejecucion_secuencial(respuesta){
         //Obsercacion: el await asegura que se espere a la ejecucion de la funcion asincronica para poder continuar... lo que frena al for en cada iteracion esperando por la respuesta y por lo tanto se tiene una ejecución secuencial
         }
     } catch (error) {
-        console.error(`Error ejecucion secuencial:`, error);
-        return null;
+        throw new Error(`Error ejecucion secuencial: ${error.message}`);
         };
 }
 
@@ -38,17 +35,16 @@ async function ejecucion_paralela(respuesta){
     try {
         const promesas = respuesta.map(u => get_cantidad_publicaciones(u.id)); //Con map se recorre el arreglo de usuarios y por cada usuario crea una promesa que se agrega a un nuevo arreglo (promesas) que contiene todas las promesas generadas
         //Observacion: al no usar await las llamadas a la funcion asincronica se realizan sin esperar a que se resuelvan, por lo tanto se tienen varias ejecuciones en paralelo
-        let publicaciones= await Promise.all(promesas) //Se espera a que todas las promesas del arreglo se resuelvan, lo cual devuelve un arreglo con cada uno de sus resultados (cantidad de publicaciones por usuario)
+        const publicaciones= await Promise.all(promesas) //Se espera a que todas las promesas del arreglo se resuelvan, lo cual devuelve un arreglo con cada uno de sus resultados (cantidad de publicaciones por usuario)
         publicaciones.forEach((cant, i) => {// Una vez resueltas todas las promesas se muestran los resultados por consola
             console.log(`Usuario ${i+1}: ${respuesta[i].name} tiene ${cant} publicaciones.`);
         });
     } catch (error) {
-        console.error(`Error ejecucion paralela:`, error);
-        return null;
+        throw new Error(`Error ejecucion paralela:${error.message}`);
         };
 }
 
-let cantidad_usuarios = 3; //Definir la cantidad de usuarios a consultar. Observación: cuanto más se agregan más visible es la diferencia de tiempos entre ambas ejecuciones
+const cantidad_usuarios = 3; //Definir la cantidad de usuarios a consultar. Observación: cuanto más se agregan más visible es la diferencia de tiempos entre ambas ejecuciones
 get_usuarios(cantidad_usuarios) //Obtener la información de los usuarios una sola vez para ambas ejecuciones
     .then((respuesta) => { //Cuando se cumple la promesa de obtener los usuarios
         console.log ('--- Ejecución Secuencial ---')
@@ -68,5 +64,5 @@ get_usuarios(cantidad_usuarios) //Obtener la información de los usuarios una so
         console.timeEnd("TiempoParalelo") //Finaliza el conteo de tiempo de ejecución paralelo y lo muestra por consola
     })
     .catch((error) => {
-        console.error('Error al recibir informacion de usuarios:', error);
+        console.error('Error al recibir informacion de usuarios:', error.message);
     });
