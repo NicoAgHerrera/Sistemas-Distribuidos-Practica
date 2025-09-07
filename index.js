@@ -48,7 +48,7 @@ async function ejecucion_paralela(respuesta){
         };
 }
 
-let cantidad_usuarios = 10; //Definir la cantidad de usuarios a consultar. Observación: cuanto más se agregan más visible es la diferencia de tiempos entre ambas ejecuciones
+let cantidad_usuarios = 3; //Definir la cantidad de usuarios a consultar. Observación: cuanto más se agregan más visible es la diferencia de tiempos entre ambas ejecuciones
 get_usuarios(cantidad_usuarios) //Obtener la información de los usuarios una sola vez para ambas ejecuciones
     .then((respuesta) => { //Cuando se cumple la promesa de obtener los usuarios
         console.log ('--- Ejecución Secuencial ---')
