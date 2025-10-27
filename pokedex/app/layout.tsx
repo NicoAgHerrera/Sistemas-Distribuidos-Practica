@@ -11,7 +11,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {/* Curva decorativa superior */}
           <div className="absolute inset-x-0 bottom-0 h-8 bg-red-900 clip-pokedex-top"></div>
 
-          <nav className="relative z-10 flex justify-center items-center p-6">
+          <nav className="relative z-10 flex justify-between items-center p-6">
             {/* Botón Pokébola como Link */}
             <Link
               href="/"
@@ -28,8 +28,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <h1 className="ml-6 text-3xl font-extrabold tracking-wider text-yellow-300 drop-shadow-lg">
               Pokédex
             </h1>
+
+            {/* Nuevo botón Favoritos */}
+            <Link
+              href="/favorites"
+              className="ml-auto bg-yellow-400 hover:bg-yellow-500 text-black font-bold px-4 py-2 rounded-lg shadow-md border-2 border-yellow-600 transition-transform hover:scale-105"
+            >
+              ⭐ Favoritos
+            </Link>
           </nav>
         </header>
+
 
         {/* 🔳 CUERPO PRINCIPAL */}
         <main className="flex-grow mx-auto w-full max-w-5xl bg-gray-900/95 mt-8 mb-8 rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.7)] border-2 border-red-500 p-8">

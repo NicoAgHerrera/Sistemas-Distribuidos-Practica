@@ -9,26 +9,31 @@ import {
 import PokemonCard from "./PokemonCard";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { useFavorites } from "@/app/hooks/useFavorites";
 
-type Pokemon = {name: string};
-
+type Pokemon = { name: string; url: string };
 
 function PokemonListContent({ cantidad }: { cantidad: number }) {
   const [offset, setOffset] = useState(0);
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
 
-  // 🔹 Pedir una página a la API
+  // Traer favoritos una sola vez
+  const { data: favorites } = useFavorites();
+
+  // Traer página de pokémon
   const { data, isLoading, isError, isFetching } = useQuery({
     queryKey: ["pokemons", offset],
     queryFn: async () => {
-      const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${cantidad}&offset=${offset}`);
+      const res = await fetch(
+        `https://pokeapi.co/api/v2/pokemon?limit=${cantidad}&offset=${offset}`
+      );
       if (!res.ok) throw new Error("Error al obtener pokemones");
       const json = await res.json();
       return json.results as Pokemon[];
-    }
+    },
   });
 
-  // 🔸 Cuando llegan datos nuevos, concatenarlos
+  // Cuando llegan datos nuevos, concatenarlos
   useEffect(() => {
     if (data && data.length > 0) {
       setPokemons(pokemons.concat(data));
@@ -58,11 +63,21 @@ function PokemonListContent({ cantidad }: { cantidad: number }) {
   return (
     <>
       <div className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(160px,1fr))] w-full max-w-6xl">
-        {pokemons.map((p) => (
-          <PokemonCard key={p.name} name={p.name} />
-        ))}
+        {pokemons.map((p) => {
+          // Extraer id del URL (ejemplo: https://pokeapi.co/api/v2/pokemon/25/)
+          const id = parseInt(p.url.split("/").slice(-2, -1)[0]);
+          const isFavorite = favorites?.some((f) => f.id === id) || false;
 
-        {/* Skeleton temporal mientras se cargan más, que se muestra despues de la lista ya existente */}
+          return (
+            <PokemonCard
+              key={id}
+              id={id}
+              isFavorite={isFavorite}
+            />
+          );
+        })}
+
+        {/* Skeleton temporal mientras carga más */}
         {isFetching &&
           Array.from({ length: Math.min(6, cantidad) }).map((_, i) => (
             <div key={`sk-${i}`} className="p-4">
@@ -74,19 +89,17 @@ function PokemonListContent({ cantidad }: { cantidad: number }) {
       <div className="mt-8 text-center">
         <button
           onClick={() => setOffset((prev) => prev + cantidad)}
-          disabled={isFetching} // evitar múltiples clicks, ya que desabilita cuando al pulsar el boton se comienza a buscar
+          disabled={isFetching}
           className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-semibold shadow-md transition-transform hover:scale-105 disabled:opacity-60"
         >
-          {isFetching ? "Cargando..." : "Cargar más"} 
+          {isFetching ? "Cargando..." : "Cargar más"}
         </button>
       </div>
     </>
   );
 }
 
-
-
-// 🔹 Envuelve con su propio QueryClientProvider
+// Envuelve con su propio QueryClientProvider
 export default function PokemonList({ cantidad }: { cantidad: number }) {
   const [queryClient] = useState(() => new QueryClient()); // Crear solo una vez
   return (

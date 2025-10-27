@@ -10,12 +10,12 @@ export const dynamic = "force-dynamic";
 export default async function PokemonDetailPage({
   params,
 }: {
-  params: Promise<{ name: string }>;
+  params: Promise<{ id: number }>;
 }) {
-  const { name } = await params;
+  const { id } = await params;
 
   // 🔹 Obtenemos datos del Pokémon
-  const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`, {
+  const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`, {
     cache: "no-store",
   });
   if (!res.ok) notFound();
