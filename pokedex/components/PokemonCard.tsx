@@ -84,7 +84,7 @@ export default function PokemonCard({ id, isFavorite }: PokemonCardProps) {
       {/* Botón de favorito */}
       <button
         onClick={handleToggleFavorite}
-        disabled={isProcessing}
+        disabled={isProcessing||isLoading}
         className={`mt-1 px-4 py-2 rounded-lg font-semibold transition-colors ${
           isFavorite
             ? "bg-yellow-400 text-black hover:bg-yellow-500"
